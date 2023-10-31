@@ -20,19 +20,21 @@ public class AssignmentProgram extends javax.swing.JFrame {
     ImageIcon bossPNG = new ImageIcon("boss.png");
     String userName, phaseNumber;
     int playerHealth = 100, bossHealth = 100, playerMove, bossMove, bossAction, bossDamage, bossHealthIncrease = 0, 
-            playerHealthIncrease = 0, levelIncrease = 0, phase, playerMoveMax = 0, currency = 0, totalCost, attackUpgradeCost = 0, 
+            playerHealthIncrease = 0, levelIncrease = 0, phase, playerMoveMax = 0, currency = 500, totalCost, attackUpgradeCost = 0, 
             healthUpgradeCost = 0, decreaseBossCost = 0, attackUpgradeAmount, healthUpgradeAmount, bossDecreaseAmount, bossDecreaseHealth = 0, 
             playerIncreaseHealth = 0, playerCounter, bossCounter;
     boolean findWinner, lose = false;
     double bossHP, playerHP, bossIncrease = bossHealthIncrease, playerIncrease = playerHealthIncrease, 
-            valueOfBossBar, valueOfPlayerBar;
+            valueOfBossBar, valueOfPlayerBar, valueOfBarPlayer, valueOfBarBoss;
     
+    // Gets the boss' action and the damage that both characters may deal/block
     public void getMove() {
         bossAction = ran.nextInt(0, 5);
         playerMove = ran.nextInt(1, (16 + playerMoveMax));
         bossMove = ran.nextInt(1, 16);
     }
     
+    // Checks if the user has won or lost
     public void checkWin() {
         if (playerHealth == 0) {
             playerHealth = 0;
@@ -53,12 +55,14 @@ public class AssignmentProgram extends javax.swing.JFrame {
         }
     }
     
+    // Changes the phase text to match the phase number
     public void setPhase() {
         phase = levelIncrease + 1;
         phaseNumber = Integer.toString(phase);
         level.setText("Phase " + phaseNumber);
     }
     
+    // Increases the phase when the user wins
     public void phaseIncrease() {
         if (lose == false) {
             for (int i = 0; i < levelIncrease; i++) {
@@ -71,6 +75,7 @@ public class AssignmentProgram extends javax.swing.JFrame {
         balance.setText(Integer.toString(currency));
     }
     
+    // Sets the boss' health bar
     public void setBossBar() {
         bossHP = bossHealth;
         bossIncrease = bossHealthIncrease;
@@ -79,22 +84,25 @@ public class AssignmentProgram extends javax.swing.JFrame {
         bossHealthBar.setString(Integer.toString(bossHealth) +  "/" + Integer.toString(100 + bossHealthIncrease));
     }
     
+    // Lowers the boss' health bar when the buff is bought
     public void lowerBossBar() {
         bossHP = bossHealth - bossDecreaseHealth;
         bossIncrease = bossDecreaseHealth;
-        valueOfBossBar = ((bossHP / (100 - bossIncrease)) * 100);
-        bossHealthBar.setValue((int) (valueOfBossBar));
+        valueOfBarBoss = ((bossHP / (100 - bossIncrease)) * 100);
+        bossHealthBar.setValue((int) (valueOfBarBoss));
         bossHealthBar.setString(Integer.toString(bossHealth + bossHealthIncrease) +  "/" + Integer.toString(100 - bossCounter + bossHealthIncrease));
     }
     
-    public void lowerPlayerBar() {
-        playerHP = playerHealth + playerIncreaseHealth;
+    // Increases the player's health bar when the buff is bought
+    public void increasePlayerBar() {
+        playerHP = playerHealth + playerHealthIncrease;
         playerIncrease = playerHealthIncrease;
-        valueOfPlayerBar = ((playerHP / (100 + playerIncrease)) * 100);
-        playerHealthBar.setValue((int) (valueOfPlayerBar));
-        playerHealthBar.setString(Integer.toString(playerHealth) +  "/" + Integer.toString(100 + playerCounter));
+        valueOfBarPlayer = ((playerHP / (100 + playerIncrease)) * 100);
+        playerHealthBar.setValue((int) (valueOfBarPlayer));
+        playerHealthBar.setString(Integer.toString(playerHealth + playerHealthIncrease) +  "/" + Integer.toString(100 + playerHealthIncrease));
     }
     
+    // Sets the players health bar
     public void setPlayerBar() {
         playerHP = playerHealth;
         playerIncrease = playerHealthIncrease;
@@ -103,6 +111,7 @@ public class AssignmentProgram extends javax.swing.JFrame {
         playerHealthBar.setString(Integer.toString(playerHealth) +  "/" + Integer.toString(100 + playerHealthIncrease));
     }
     
+    // Adds the images of the player and the boss
     public AssignmentProgram() {
         initComponents();
         
@@ -465,6 +474,7 @@ public class AssignmentProgram extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // Makes the user attack
     private void attackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attackActionPerformed
         getMove();
         userName = userNameInput.getText();
@@ -514,7 +524,8 @@ public class AssignmentProgram extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_attackActionPerformed
-
+    
+    // Makes the user dodge
     private void dodgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dodgeActionPerformed
         getMove();
         checkWin();
@@ -534,11 +545,13 @@ public class AssignmentProgram extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_dodgeActionPerformed
-
+    
+    // Has no function
     private void userNameInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userNameInputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_userNameInputActionPerformed
-
+    
+    // Makes the user defend
     private void defendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defendActionPerformed
         getMove();
         checkWin();
@@ -565,10 +578,12 @@ public class AssignmentProgram extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_defendActionPerformed
 
+    // Has no function
     private void battleOutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_battleOutputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_battleOutputActionPerformed
-
+    
+    // Purchases any item that the player may have bought in the shop
     private void purchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseActionPerformed
         attackUpgradeAmount = (int)upgradeAttackAmount.getValue();
         healthUpgradeAmount = (int)upgradeHealthAmount.getValue();
@@ -577,9 +592,8 @@ public class AssignmentProgram extends javax.swing.JFrame {
         attackUpgradeCost = 0;
         healthUpgradeCost = 0;
         playerMoveMax = 0;
-        playerIncreaseHealth = 0;
+        playerHealthIncrease = 0;
         bossDecreaseHealth = 0;
-        playerCounter += 5 * healthUpgradeCost;
         bossCounter += 5 * decreaseBossCost;
         
         for (int i = 0; i < attackUpgradeAmount; i++) {
@@ -596,34 +610,39 @@ public class AssignmentProgram extends javax.swing.JFrame {
         if (totalCost <= currency) {
             for (int j = 0; j < attackUpgradeAmount; j++) {
                 playerMoveMax += 2;
+                currency -= 50;
             }
             for (int q = 0; q < healthUpgradeAmount; q++) {
-                playerIncreaseHealth += 5;
+                playerHealthIncrease += 5;
+                currency -= 75;
                 
             }
             for (int t = 0; t < bossDecreaseAmount; t++) {
                 bossDecreaseHealth += 5;
+                currency -= 100;
             }
-            balance.setText(Integer.toString(currency - totalCost));
-            playerMove = playerMove + playerMoveMax;
-            if (healthUpgradeAmount >= 1) {
-                playerHealth = playerHealth + playerIncreaseHealth;
-                playerHealthBar.setMaximum(playerHealth);
-                lowerPlayerBar();
+            if (attackUpgradeAmount >= 1) {
+                playerMove = playerMove + playerMoveMax;
             }
+            playerHealth += playerHealthIncrease;
+            playerHealthBar.setMaximum(100 + playerHealthIncrease);
+            increasePlayerBar();
+            playerHealthBar.setValue(100 + playerHealthIncrease);
             if (bossDecreaseAmount >= 1) {
                 bossHealthBar.setMaximum(bossHealth);
                 lowerBossBar();
                 bossHealth = bossHealth - bossDecreaseHealth;
-            }
+            
+            balance.setText(Integer.toString(currency));
             shopOutput.setText("You upgraded your damage " + attackUpgradeAmount + " times, health " + healthUpgradeAmount + 
                     " times and decreased the boss' health " + bossDecreaseAmount + " times");
-            totalCost = 0;
         } else {
             shopOutput.setText("You do not have enough money to buy these items");
         }
+        }
     }//GEN-LAST:event_purchaseActionPerformed
-
+    
+    // Allows user to move to the next level
     private void nextLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextLevelActionPerformed
         checkWin();
         
@@ -632,14 +651,15 @@ public class AssignmentProgram extends javax.swing.JFrame {
             setPhase();
             bossHealthIncrease += 10;
             bossHealthBar.setString(Integer.toString(bossHealth + bossHealthIncrease) + "/" + Integer.toString(bossHealth + bossHealthIncrease));
-            playerHealthBar.setString(Integer.toString(playerHealth) + "/" + Integer.toString(100 + playerHealthIncrease));
-            playerHealthBar.setValue(100 + playerIncreaseHealth);
+            playerHealthBar.setString(Integer.toString(playerHealth + playerHealthIncrease) + "/" + Integer.toString(100 + playerHealthIncrease));
+            playerHealthBar.setValue(playerHealth + playerHealthIncrease);
             bossHealthBar.setValue(100 + (bossHealthIncrease * 2));
         } else {
             battleOutput.setText("You have not beat this phase yet");
         }
     }//GEN-LAST:event_nextLevelActionPerformed
-
+    
+    // Resets the game
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
         findWinner = false;
         lose = false;
